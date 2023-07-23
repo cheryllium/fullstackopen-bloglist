@@ -1,6 +1,7 @@
 const config = require('./utils/config')
 require('express-async-errors')
 const express = require('express')
+const middleware = require('./utils/middleware')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
@@ -15,5 +16,7 @@ app.use(express.json())
 
 const blogsRouter = require('./controllers/blog')
 app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.errorHandler)
 
 module.exports = app

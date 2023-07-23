@@ -107,6 +107,13 @@ describe('deleting a blog post', () => {
     const blogIds = updatedBlogs.map(b => b.id)
     expect(blogIds).not.toContain(blogToDelete.id)
   })
+
+  test('returns 400 with error when deleting malformed id', async () => {
+    const response = await api
+          .delete('/api/blogs/1')
+          .expect(400)
+    expect(response.body.error).toBe('malformatted id')
+  })
 })
 
 describe('can update a blog post', () => {
