@@ -108,6 +108,13 @@ describe('deleting a blog post', () => {
     expect(blogIds).not.toContain(blogToDelete.id)
   })
 
+  test('returns 204 when deleting nonexistent id', async () => {
+    const nonExistingId = await helper.nonExistingId()
+    await api
+      .delete(`/api/blogs/${nonExistingId}`)
+      .expect(204)
+  })
+  
   test('returns 400 with error when deleting malformed id', async () => {
     const response = await api
           .delete('/api/blogs/1')
