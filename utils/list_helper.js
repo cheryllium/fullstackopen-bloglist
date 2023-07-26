@@ -10,10 +10,7 @@ const totalLikes = (blogs) => {
 
 const favoriteBlog = (blogs) => {
   let favoriteBlog = { likes: 0 }
-  console.log('favoriteBlog', favoriteBlog)
-  console.log('blogs', blogs)
   for(const blog of blogs) {
-    console.log('blog', blog)
     if(blog.likes >= favoriteBlog.likes) {
       favoriteBlog = blog
     }
