@@ -8,10 +8,7 @@ const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  for(const blog of helper.initialBlogs) {
-    let newBlog = new Blog(blog)
-    await newBlog.save()
-  }
+  await Blog.insertMany(helper.initialBlogs)
 })
 
 describe('when there are initial blog posts', () => {

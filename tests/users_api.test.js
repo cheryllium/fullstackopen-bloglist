@@ -8,10 +8,7 @@ const User = require('../models/user')
 
 beforeEach(async () => {
   await User.deleteMany({})
-  for(const user of helper.initialUsers) {
-    let newUser = new User(user)
-    await newUser.save()
-  }
+  await User.insertMany(helper.initialUsers)
 })
 
 describe('when there are initial users', () => {
@@ -27,9 +24,9 @@ describe('when there are initial users', () => {
 describe('when creating new users', () => {
   test('creating new valid user works', async () => {
     const newUser = {
-      username: "rexxi",
-      name: "Rexxi",
-      password: "dinotracks"
+      username: 'rexxi',
+      name: 'Rexxi',
+      password: 'dinotracks'
     }
 
     const response = await api
@@ -39,6 +36,79 @@ describe('when creating new users', () => {
 
     const users = await helper.usersInDb()
     expect(users.length).toBe(helper.initialUsers.length + 1)
+  })
+
+  test('disallow non-unique username', async () => {
+    const newUser = {
+      username: 'steggi',
+      name: 'Steggi 2',
+      password: 'password'
+    }
+
+    const response = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+    expect(response.body.error).toContain('expected `username` to be unique')
+  })
+
+  test('disallow creating user without username', async () => {
+    const newUser = {
+      name: 'Steggi 2',
+      password: 'password'
+    }
+
+    const response = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+    expect(response.body.error).toContain('must give both username and password')
+  })
+
+  test('disallow creating user without password', async () => {
+    const newUser = {
+      username: 'steggi',
+      name: 'Steggi 2',
+    }
+
+    const response = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+    expect(response.body.error).toContain('must give both username and password')
+  })
+
+  test('username must be at least 3 characters long', async () => {
+    const newUser = {
+      username: 'st',
+      name: 'Steggi 2',
+      password: 'password'
+    }
+
+    const response = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+    expect(response.body.error).toContain('is shorter than the minimum allowed length (3)')
+  })
+
+  test('password must be at least 3 characters long', async () => {
+    const newUser = {
+      username: 'steggi',
+      name: 'Steggi 2',
+      password: 'ps'
+    }
+
+    const response = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+    expect(response.body.error).toContain('password must be at least 3 characters long')
   })
 })
 
