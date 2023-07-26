@@ -112,3 +112,6 @@ describe('when creating new users', () => {
   })
 })
 
+afterAll(async () => {
+  await mongoose.connection.close()
+})
