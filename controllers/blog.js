@@ -14,6 +14,10 @@ blogsRouter.post('/', async (request, response) => {
   }
 
   const user = request.user
+  if (!user) {
+    return response.status(401).json({ error: 'you are not logged in' })
+  }
+  
   const blog = request.body.likes
         ? new Blog({ ...request.body, user: user.id })
         : new Blog({ ...request.body, likes: 0, user: user.id })
@@ -41,6 +45,10 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const user = request.user
+  if (!user) {
+    return response.status(401).json({ error: 'you are not logged in' })
+  }
+
   const blog = await Blog.findById(request.params.id)
 
   if(blog.user.toString() === user.id) {

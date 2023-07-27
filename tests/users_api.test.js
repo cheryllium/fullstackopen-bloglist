@@ -6,9 +6,21 @@ const api = supertest(app)
 const helper = require('./test_helper')
 const User = require('../models/user')
 
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
 beforeEach(async () => {
   await User.deleteMany({})
-  await User.insertMany(helper.initialUsers)
+  
+  const saltRounds = 10
+  for(const user of helper.initialUsers) {
+    let newUser = new User({
+      username: user.username,
+      name: user.name,
+      passwordHash: await bcrypt.hash(user.password, saltRounds)
+    })
+    await newUser.save()
+  }
 })
 
 describe('when there are initial users', () => {
