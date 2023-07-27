@@ -13,6 +13,7 @@ mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
+app.use(middleware.tokenExtractor)
 
 const blogsRouter = require('./controllers/blog')
 app.use('/api/blogs', blogsRouter)
