@@ -8,7 +8,8 @@ const mongoose = require('mongoose')
 
 const Blog = require('./models/blog')
 
-const mongoUrl = config.MONGODB_URI
+const mongoUrl = process.env.NODE_ENV === 'test'
+      ? config.TEST_MONGODB_URI : config.MONGODB_URI
 mongoose.connect(mongoUrl)
 
 app.use(cors())
