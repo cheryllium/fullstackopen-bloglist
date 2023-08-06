@@ -26,14 +26,16 @@ blogsRouter.post('/', async (request, response) => {
 
   user.blogs = user.blogs.concat(result._id)
   await user.save()
+
+  result.user = user
   
   response.status(201).json(result)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes } = request.body
+  const { title, author, url, likes, user } = request.body
   const blog = {
-    title, author, url, likes
+    title, author, url, likes, user
   }
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
